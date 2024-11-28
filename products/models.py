@@ -1,7 +1,7 @@
 from django.db import models
 
 class Products(models.Model):
-    id = models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')
+    # id = models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')
     name = models.CharField(max_length=255)
     description = models.TextField()
     rate = models.IntegerField()
