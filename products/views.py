@@ -2,20 +2,20 @@ from tempfile import template
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status, serializers
+from django.shortcuts import get_object_or_404
+
 from .models import Products
 from .serializer import ProductsSerializer
 
 @api_view(['GET'])
 def ApiOverview(request):
     api_urls = {
-        'all_products': '/',
+        'All_products': '/',
         'Search by Name': '/?name=name',
         'Search by Category': '/?category=category_name',
-        'Search by Rate': '/?rate=rate_amount',
-        'Search by Price': '/?price=price_amount',
-        'Add': '',
-        'Update': '',
-        'Delete': ''
+        'Add': '/add',
+        'Update': '/update/<pk>',
+        'Delete': '/product/<pk>/delete'
     }
  
     return Response(api_urls)
