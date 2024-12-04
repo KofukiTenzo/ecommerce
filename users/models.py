@@ -9,6 +9,7 @@ class UserManager(BaseUserManager):
             phone_number: int, 
             email: str, 
             password: str = None,
+            role: str = "customer",
             is_staff = False,
             is_superuser = False,
             ) -> "User":
@@ -28,6 +29,7 @@ class UserManager(BaseUserManager):
         user.last_name = last_name
         user.phone_number = phone_number
         user.set_password(password)
+        user.role = role
         user.is_active = True
         user.is_staff = is_staff
         user.is_superuser = is_superuser
@@ -36,7 +38,7 @@ class UserManager(BaseUserManager):
         return user
     
     def create_superuser(
-        self, first_name: str, last_name: str, phone_number: int, email: str, password: str
+        self, first_name: str, last_name: str, phone_number: int, email: str, password: str, role: str = "admin"
     ) -> "User":
         user = self.create_user(
             first_name=first_name,
@@ -44,6 +46,7 @@ class UserManager(BaseUserManager):
             phone_number = phone_number,
             email=email,
             password=password,
+            role=role,
             is_staff=True,
             is_superuser=True,
         )
@@ -54,11 +57,18 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('manager', 'Manager'),
+        ('customer', 'Customer'),
+    ]
+
     first_name = models.CharField(verbose_name="First Name", max_length=255)
     last_name = models.CharField(verbose_name="Last Name", max_length=255)
     phone_number = models.IntegerField()
     email = models.CharField(verbose_name="Email", max_length=255, unique=True)
     password = models.CharField(max_length=255)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='customer')
 
     objects = UserManager()
 
