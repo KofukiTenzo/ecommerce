@@ -1,0 +1,41 @@
+[
+    {
+        "model": "products.products",
+        "pk": 1,
+        "fields": {
+            "name": "Laptop",
+            "description": "A high-performance laptop suitable for gaming and work.",
+            "rate": 5,
+            "price": 1200.99,
+            "stock": 10,
+            "category": "Electronics",
+            "image": "media/laptop.jpg"
+        }
+    },
+    {
+        "model": "products.products",
+        "pk": 2,
+        "fields": {
+            "name": "Smartphone",
+            "description": "A sleek and powerful smartphone with a long-lasting battery.",
+            "rate": 4,
+            "price": 799.99,
+            "stock": 50,
+            "category": "Electronics",
+            "image": "media/smartphone.jpg"
+        }
+    },
+    {
+        "model": "products.products",
+        "pk": 3,
+        "fields": {
+            "name": "Office Chair",
+            "description": "An ergonomic office chair with lumbar support.",
+            "rate": 4,
+            "price": 150.00,
+            "stock": 25,
+            "category": "Furniture",
+            "image": "media/office_chair.jpg"
+        }
+    }
+]

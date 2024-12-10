@@ -6,7 +6,7 @@ class UserManager(BaseUserManager):
             self,
             first_name: str, 
             last_name: str, 
-            phone_number: int, 
+            phone_number: str, 
             email: str, 
             password: str = None,
             group: "Groups" = None,
@@ -23,7 +23,7 @@ class UserManager(BaseUserManager):
         if not phone_number:
             raise ValueError("User must have a phone number")
 
-        group = Groups.objects.get("customer")
+        group = Groups.objects.get(group="customer")
 
         user = self.model(email=self.normalize_email(email))
         user.first_name = first_name
@@ -39,7 +39,7 @@ class UserManager(BaseUserManager):
         return user
     
     def create_superuser(
-        self, first_name: str, last_name: str, phone_number: int, email: str, password: str, group: "Groups" = None
+        self, first_name: str, last_name: str, phone_number: str, email: str, password: str, group: "Groups" = None
     ) -> "User":
         
         group = Groups.objects.get(group="admin")
@@ -68,12 +68,12 @@ class Groups(models.Model):
 class User(AbstractUser):
     first_name = models.CharField(verbose_name="First Name", max_length=255)
     last_name = models.CharField(verbose_name="Last Name", max_length=255)
-    phone_number = models.IntegerField()
+    phone_number = models.CharField(verbose_name="Phone Number", max_length=15, null=False, unique=True)
     email = models.CharField(verbose_name="Email", max_length=255, unique=True)
     password = models.CharField(max_length=255)
     group = models.ForeignKey(Groups, on_delete=models.SET_NULL, null=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number']

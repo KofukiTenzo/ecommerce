@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status, serializers
 from rest_framework.permissions import IsAuthenticated
-from users.permissions import isManagerOrAdmin
+from users.permissions import IsManagerOrAdmin
 from django.shortcuts import get_object_or_404
 
 from .models import Products
@@ -38,7 +38,7 @@ def view_products(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
 @api_view(['POST'])
-@permission_classes([IsAuthenticated | isManagerOrAdmin])
+@permission_classes([IsAuthenticated, IsManagerOrAdmin])
 def add_product(request):
     product = ProductsSerializer(data=request.data)
  
@@ -53,7 +53,7 @@ def add_product(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated | isManagerOrAdmin])
+@permission_classes([IsAuthenticated, IsManagerOrAdmin])
 def update_product(request, pk):
     product = Products.objects.get(pk=pk)
     data = ProductsSerializer(instance=product, data=request.data)
@@ -65,7 +65,7 @@ def update_product(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated | isManagerOrAdmin])
+@permission_classes([IsAuthenticated, IsManagerOrAdmin])
 def delete_product(request, pk):
     product = get_object_or_404(Products, pk=pk)
     product.delete()

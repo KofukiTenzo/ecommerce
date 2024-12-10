@@ -2,4 +2,23 @@ settings.py
 
 # \templates
 
-migrations/
+*/migrations/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+__pycache__/
+mydatabase
+
+# Media files
+media/
+MEDIA/
+
+# Static files
+staticfiles/
+static/
+
+# VS Code project files
+.vscode/
+*.code-workspace
