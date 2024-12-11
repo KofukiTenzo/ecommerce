@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
             group: "Groups" = None,
             is_staff = False,
             is_superuser = False,
-            ) -> "User":
+            ) -> "CustomUser":
         
         if not email:
             raise ValueError("User must have an email")
@@ -40,7 +40,7 @@ class UserManager(BaseUserManager):
     
     def create_superuser(
         self, first_name: str, last_name: str, phone_number: str, email: str, password: str, group: "Groups" = None
-    ) -> "User":
+    ) -> "CustomUser":
         
         group = Groups.objects.get(group="admin")
 
@@ -65,7 +65,7 @@ class Groups(models.Model):
     def __str__(self):
         return self.group
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     first_name = models.CharField(verbose_name="First Name", max_length=255)
     last_name = models.CharField(verbose_name="Last Name", max_length=255)
     phone_number = models.CharField(verbose_name="Phone Number", max_length=15, null=False, unique=True)
