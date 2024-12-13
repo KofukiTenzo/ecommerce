@@ -1,37 +1,26 @@
 from rest_framework import serializers
+from django.db import transaction
 from django.contrib.auth.password_validation import validate_password
-from .models import CustomUser
+from dj_rest_auth.registration.serializers import RegisterSerializer
+from .models import CustomUser, Groups
 import re
 
-class UsersRegisterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['first_name',
-                  'last_name',
-                  'phone_number',
-                  'email',
-                  'password']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }   
-    
-    def validate_phone(self, value):
-        if not re.match(r'^[1-9]\d{1,14}$', value):
-            raise serializers.ValidationError("Phone number is not valid.")
-        return value
-    
-    def validate_password(self, value):
-        validate_password(value)  # Built-in Django password validator
-        return value
-    
-    def create(self, validated_data):
-        password = validated_data.pop('password')  # Extract password
-        user = CustomUser(**validated_data)  # Create user instance without saving yet
-        user.set_password(password)  # Hash the password
-        user.save()  # Save the user to the database
-        return user
-    
 class UserSerializer(serializers.ModelSerializer):    
     class Meta:
         model = CustomUser
         fields = ['pk', 'email', 'first_name', 'last_name', 'phone_number']
+        
+class CustomRegisterSerializer(RegisterSerializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    phone_number = serializers.CharField()
+
+    @transaction.atomic
+    def save(self, request):
+        user = super().save(request)
+        user.first_name = self.data.get('first_name')
+        user.last_name = self.data.get('last_name')
+        user.phone_number = self.data.get('phone_number')
+        
+        user.save()
+        return user
