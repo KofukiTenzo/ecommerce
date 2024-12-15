@@ -1,0 +1,26 @@
+[
+    {
+        "model": "users.role",
+        "pk": 1,
+        "fields": {
+            "role": "customer",
+            "description": "Default role for every customer."
+        }
+    },
+    {
+        "model": "users.role",
+        "pk": 2,
+        "fields": {
+            "role": "manager",
+            "description": "Role for managers, provides them permissions to create, update and delete products."
+        }
+    },
+    {
+        "model": "users.role",
+        "pk": 3,
+        "fields": {
+            "role": "admin",
+            "description": "Administrator with full permissions."
+        }
+    }
+]
