@@ -1,0 +1,7 @@
+Hello {{ user.first_name }} {{ user.last_name }},
+
+This is a "pet-ecommerce", please click the link below to confirm you email address:
+
+[Confirm Email: {{ activate_url }}]
+
+Best, Kofuki

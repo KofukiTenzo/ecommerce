@@ -1,8 +1,11 @@
-from dj_rest_auth.serializers import UserDetailsSerializer
+from dj_rest_auth.serializers import UserDetailsSerializer, LoginSerializer
 from dj_rest_auth.registration.serializers import RegisterSerializer
-import phonenumbers
+from rest_framework.exceptions import ValidationError, AuthenticationFailed
+from django.contrib.auth import authenticate
+from django.core.validators import validate_email
 from rest_framework import serializers
 from .models import CustomUser, Role
+import phonenumbers
 
 class CustomUserDetailsSerializer(UserDetailsSerializer):
     role = serializers.StringRelatedField()  # Returns the role name
@@ -16,9 +19,20 @@ class CustomUserDetailsSerializer(UserDetailsSerializer):
         
 class CustomRegisterSerializer(RegisterSerializer):
     username = None
+    email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True, allow_blank=True)
     last_name = serializers.CharField(required=True, allow_blank=True)
     phone = serializers.CharField(required=True)
+    
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+
+        try:
+            validate_email(value)
+        except serializers.ValidationError:
+            raise serializers.ValidationError("Invalid email format.")
+        return value
     
     def validate_phone(self, value):
         if CustomUser.objects.filter(phone=value).exists():
@@ -39,12 +53,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.phone = self.validated_data.get('phone', '')
         default_role = Role.objects.get(role='customer')
         user.role = default_role
-        user.save(update_fields=['first_name', 'last_name', 'phone', 'role'])
+        user.save(update_fields=['first_name', 'last_name', 'phone', 'role', 'is_active'])
         
-class CustomLoginSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True, allow_blank=True)
-    password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
-    
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'password')
+class CustomLoginSerializer(LoginSerializer):
+    username = None
